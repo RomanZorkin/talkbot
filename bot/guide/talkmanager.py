@@ -1,6 +1,16 @@
 import re
 
-from bot.guide import answer, corpusadmin, wikiload, user
+from bot.guide import answer, corpusadmin, user, wikiload
+
+
+def theme_list():
+    themes = wikiload.theme_list()
+    num_list = []
+    for num, word in enumerate(wikiload.theme_list()):
+        num_list.append('{0}. {1}'.format(num + 1, word))
+
+    text = '\n'.join(num_list)
+    return f'Перечень перечень существующих тем:\n{text}\n\nПример:\nВведите "choose: {themes[0]}"'
 
 
 def load_handler(theme_name):
@@ -22,11 +32,11 @@ def choose_handler(theme_name, uid):
 
 
 def conversation(text: str, uid):
-
-    if re.match(r'^load: ', text):
-        return load_handler(wikiload.load_theme(re.sub(r'^load: ', '', text)))
-
-    if re.match(r'^choose: ', text):
-        return choose_handler(re.sub(r'^choose: ', '', text), uid)
- 
-    return answer.get_answer(text, user.read_theme(uid))
+    if re.match(r'^load: ', text):  # noqa:WPS360 control text
+        return load_handler(wikiload.load_theme(re.sub(r'^load: ', '', text)))  # noqa:WPS360
+    if re.match(r'^choose: ', text):  # noqa:WPS360 control text
+        return choose_handler(re.sub(r'^choose: ', '', text), uid)  # noqa:WPS360 control text
+    user_theme = user.read_theme(uid)
+    if not user_theme:
+        return 'Возможно вы не выбрали или не загрузили необходимую тематику'
+    return answer.get_answer(text, user_theme)

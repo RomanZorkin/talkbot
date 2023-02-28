@@ -38,13 +38,14 @@ def prepare_text(text_list: List[str], user_response: str) -> str:
 
 
 def get_answer(user_response: str, theme_name: str) -> List[str]:
-    text_df = create_tokens(user_response, theme_name)
+    text_df = create_tokens(user_response, theme_name).dropna()
     tfidf_vec = TfidfVectorizer()  # Вызовем векторизатор TF-IDF
     tfidf = tfidf_vec.fit_transform(text_df['token'])
     idx = best_index(tfidf)
 
     if idx[0] < 0:
+        del text_df, tfidf_vec, tfidf
         return 'Извините, я не нашел ответа ...'
-    return prepare_text(
-        text_df.loc[idx, 'text'].to_list(), user_response,
-    )
+    answer = prepare_text(text_df.loc[idx, 'text'].to_list(), user_response)
+    del text_df, tfidf_vec, tfidf
+    return answer

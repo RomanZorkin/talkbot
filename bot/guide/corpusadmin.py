@@ -42,8 +42,9 @@ def normalize_text(text: str) -> list[str]:
 def update_corpus(theme_name: str):
     base_df = config.norm_frame(theme_name)
     base_df['token'] = base_df['text'].apply(normalize_text)
-    base_df.to_csv(f'data/{theme_name}.csv', index=False, sep='@')
+    base_df.to_csv(f'bot/data/{theme_name}.csv', index=False, sep='@')
+    del base_df
 
 
 def load_rule(theme_name: str) -> pd.DataFrame:
-    return pd.read_csv(f'data/{theme_name}.csv', index_col=False, delimiter='@')
+    return pd.read_csv(f'bot/data/{theme_name}.csv', index_col=False, delimiter='@')
