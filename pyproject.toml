@@ -12,6 +12,9 @@ natasha = "^1.5.0"
 aiogram = "^2.25.1"
 pandas = "^1.5.3"
 numpy = "^1.24.2"
+scikit-learn = "^1.2.1"
+bs4 = "^0.0.1"
+sklearn = "^0.0.post1"
 
 
 [tool.poetry.group.dev.dependencies]

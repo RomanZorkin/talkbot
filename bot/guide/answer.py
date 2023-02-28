@@ -1,5 +1,6 @@
-import pandas as pd
+from typing import List
 
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -25,20 +26,23 @@ def best_index(tfidf):
     return idx
 
 
-def prepare_text(text_list: list[str], user_response: str) -> str:
+def prepare_text(text_list: List[str], user_response: str) -> str:
     text_list.reverse()
-    text_list = [f'{num+1}. {word}' for num, word in enumerate(text_list)]
-    text = '\n'.join(text_list)
-    
+
+    num_list = []
+    for num, word in enumerate(text_list):
+        num_list.append('{0}. {1}'.format(num + 1, word))
+
+    text = '\n'.join(num_list)
     return f'Перечень подходящих вариантов по запросу "{user_response}":\n{text}'
 
 
-def get_answer(user_response: str, theme_name: str) -> list[str]:
+def get_answer(user_response: str, theme_name: str) -> List[str]:
     text_df = create_tokens(user_response, theme_name)
-    TfidfVec = TfidfVectorizer()  # Вызовем векторизатор TF-IDF
-    tfidf = TfidfVec.fit_transform(text_df['token'])
+    tfidf_vec = TfidfVectorizer()  # Вызовем векторизатор TF-IDF
+    tfidf = tfidf_vec.fit_transform(text_df['token'])
     idx = best_index(tfidf)
-    
+
     if idx[0] < 0:
         return 'Извините, я не нашел ответа ...'
     return prepare_text(

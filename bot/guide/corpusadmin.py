@@ -2,38 +2,37 @@ import re
 import string
 
 import natasha as nt
-import nltk
 import pandas as pd
-from nltk.corpus.reader.plaintext import PlaintextCorpusReader
 
 from bot import config
 
 
-def norm_tokens(text):
-    #Инициализируем вспомогательные объекты библиотеки natasha
+def make_doc(word_token):
     segmenter = nt.Segmenter()
-    morph_vocab = nt.MorphVocab()
     emb = nt.NewsEmbedding()
     morph_tagger = nt.NewsMorphTagger(emb)
     ner_tagger = nt.NewsNERTagger(emb)
 
-    #Убираем знаки пунктуации из текста
-    text = re.sub(r'[^\w]', ' ', text.lower())
-    text = re.sub(r'\b[а-я,a-z,\d]\b', ' ',  text)
-    word_token = text.translate(str.maketrans('', '', string.punctuation)).replace('—', '')
-
-    #Преобразуем очищенный текст в объект Doc и
     doc = nt.Doc(word_token)
     doc.segment(segmenter)
     doc.tag_morph(morph_tagger)
     doc.tag_ner(ner_tagger)
+    return doc
 
-    #Приводим каждое слово к его изначальной форме
+
+def norm_tokens(text):
+    text = re.sub(r'[^\w]', ' ', text.lower())
+    text = re.sub(r'\b[а-я,a-z,\d]\b', ' ', text)
+    text = text.translate(str.maketrans('', '', string.punctuation))
+    word_token = text.replace('—', '')
+
+    morph_vocab = nt.MorphVocab()
+    doc = make_doc(word_token)
     for token in doc.tokens:
         token.lemmatize(morph_vocab)
-    resDict = {_.text: _.lemma for _ in doc.tokens}
+    res_dict = {_.text: _.lemma for _ in doc.tokens}
 
-    return [resDict[i] for i in resDict]
+    return [res_dict[word] for word in res_dict]
 
 
 def normalize_text(text: str) -> list[str]:

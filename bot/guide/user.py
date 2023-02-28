@@ -1,10 +1,10 @@
 from bot.guide import wikiload
 
 
-def start(uid: int | str):    
+def start(uid: int | str):
     with open(f'users/{uid}.txt', 'w') as config:
         config.write('')
-    
+
 
 def write(uid: str, theme_name: str):
     if theme_name not in wikiload.theme_list():
