@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "talkbot"
+version = "0.1.0"
+description = ""
+authors = ["RomanZorkin <zorkin.roman@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<=3.10"
+nltk = "^3.8.1"
+natasha = "^1.5.0"
+aiogram = "^2.25.1"
+pandas = "^1.5.3"
+numpy = "^1.24.2"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.0.1"
+wemake-python-styleguide = "^0.17.0"
+pylint = "^2.16.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
