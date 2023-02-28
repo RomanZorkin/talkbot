@@ -1,6 +1,5 @@
-import gc
-
 from aiogram import Bot, Dispatcher, executor, types
+from memory_profiler import profile
 
 from bot import config
 from bot.guide import talkmanager, user
@@ -20,8 +19,7 @@ async def start(message: types.Message):
 
 
 @dp.message_handler(commands=['help'])
-async def start(message: types.Message):
-    user.start(message.chat.id)
+async def help(message: types.Message):
     with open('bot/messages/start.txt', 'r') as begin:
         text = begin.readlines()
     await message.answer('\n'.join(text))
@@ -33,11 +31,11 @@ async def themes(message: types.Message):
 
 
 @dp.message_handler()
+@profile
 async def search_func(message: types.message):
     answer = talkmanager.conversation(message.text, message.chat.id)
     await message.answer(answer)
-    del answer
-    gc.collect()
+
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

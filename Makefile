@@ -6,5 +6,5 @@ run:
 
 
 lint:
-	@flake8 bot
 	@mypy bot
+	@flake8 bot
