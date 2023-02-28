@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher, executor, types
+from memory_profiler import profile
 
 from bot import config
 from bot.guide import talkmanager, user
@@ -30,6 +31,7 @@ async def themes(message: types.Message):
 
 
 @dp.message_handler()
+@profile
 async def search_func(message: types.message):
     answer = talkmanager.conversation(message.text, message.chat.id)
     await message.answer(answer)
