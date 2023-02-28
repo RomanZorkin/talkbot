@@ -9,8 +9,9 @@ from bot.guide import corpusadmin
 
 def create_tokens(user_response: str, theme_name: str) -> pd.DataFrame:
     base_corpus = corpusadmin.load_rule(theme_name)
+    norm_response = corpusadmin.normalize_text(user_response)
     new_row = pd.DataFrame(columns=['text', 'token'])
-    new_row.loc[0] = [user_response, corpusadmin.normalize_text(user_response)]
+    new_row.loc[0] = [user_response, norm_response]
     return pd.concat([base_corpus, new_row], ignore_index=True)
 
 
@@ -37,15 +38,15 @@ def prepare_text(text_list: List[str], user_response: str) -> str:
     return f'Перечень подходящих вариантов по запросу "{user_response}":\n{text}'
 
 
-def get_answer(user_response: str, theme_name: str) -> List[str]:
+def get_answer(user_response: str, theme_name: str) -> str:
     text_df = create_tokens(user_response, theme_name).dropna()
-    tfidf_vec = TfidfVectorizer()  # Вызовем векторизатор TF-IDF
+    tfidf_vec = TfidfVectorizer()
     tfidf = tfidf_vec.fit_transform(text_df['token'])
     idx = best_index(tfidf)
 
     if idx[0] < 0:
-        del text_df, tfidf_vec, tfidf
+        del text_df, tfidf_vec, tfidf  # noqa:WPS420 free up memory
         return 'Извините, я не нашел ответа ...'
     answer = prepare_text(text_df.loc[idx, 'text'].to_list(), user_response)
-    del text_df, tfidf_vec, tfidf
+    del text_df, tfidf_vec, tfidf  # noqa:WPS420 free up memory
     return answer

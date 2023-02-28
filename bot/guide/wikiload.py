@@ -1,17 +1,18 @@
 import re
 from pathlib import Path
+from typing import List, Optional
 
 import bs4
 import requests
 
 
-def test_url(url: str):
+def test_url(url: str) -> Optional[str]:
     if not re.search(r'^https://ru.wikipedia.org/wiki/', url):  # noqa:WPS360 control text
         return None
     return re.sub(r'^https://ru.wikipedia.org/wiki/', '', url)  # noqa:WPS360 control text
 
 
-def load_theme(url: str):
+def load_theme(url: str) -> Optional[str]:
 
     theme_name = test_url(url)
     if not theme_name:
@@ -28,7 +29,7 @@ def load_theme(url: str):
     return theme_name
 
 
-def theme_list():
+def theme_list() -> List[str]:
     file_path = Path('bot/data')
     ext = r'*.txt'  # noqa:WPS360 control text
     return [corpus.stem for corpus in list(file_path.glob(ext))]
