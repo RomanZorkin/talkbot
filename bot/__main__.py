@@ -36,6 +36,7 @@ async def themes(message: types.Message):
 async def search_func(message: types.message):
     answer = talkmanager.conversation(message.text, message.chat.id)
     await message.answer(answer)
+    del answer
     gc.collect()
 
 if __name__ == '__main__':
