@@ -1,5 +1,7 @@
 import re
 
+from memory_profiler import profile
+
 from bot.guide import answer, corpusadmin, user, wikiload
 
 
@@ -13,6 +15,7 @@ def theme_list():
     return f'Перечень перечень существующих тем:\n{text}\n\nПример:\nВведите "choose: {themes[0]}"'
 
 
+@profile
 def load_handler(theme_name):
     if not theme_name:
         return 'Ошибка url адреса, адрес должен быть вида:\n\n"https://ru.wikipedia.org/wiki/..."'

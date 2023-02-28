@@ -3,6 +3,7 @@ import string
 
 import natasha as nt
 import pandas as pd
+from memory_profiler import profile
 
 from bot import config
 
@@ -39,8 +40,9 @@ def normalize_text(text: str) -> list[str]:
     return ' '.join(norm_tokens(text))
 
 
+@profile
 def update_corpus(theme_name: str):
-    base_df = config.norm_frame(theme_name)
+    base_df = pd.DataFrame(config.norm_frame(theme_name))
     base_df['token'] = base_df['text'].apply(normalize_text)
     base_df.to_csv(f'bot/data/{theme_name}.csv', index=False, sep='@')
     del base_df

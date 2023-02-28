@@ -129,5 +129,4 @@ dmypy.json
 .pyre/
 
 # projekt data
-data/
-users/
+bot/users/*.txt
